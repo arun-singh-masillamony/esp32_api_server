@@ -9,30 +9,23 @@ IPAddress static_ip(192, 168, 0, 140); // Static IP address
 IPAddress gateway(192, 168, 0, 1);      // Gateway IP address
 IPAddress subnet(255, 255, 255, 0);     // Subnet mask
 
-const int trigPin = 5;
-const int echoPin = 18;
-
-//define sound speed in cm/uS
-#define SOUND_SPEED 0.034
-#define CM_TO_INCH 0.393701
-
-long duration;
-float distanceCm;
-float distanceInch;
+// Input pin
+const int trigPin = 14;
+// Output pin
+const int echoPin = 27;
 
 AsyncWebServer server(80);
 
+float distanceCm;
+
 int readWaterLevel() {
   // Replace this with your actual code to read the water level
-  return 75; // Example placeholder value for demonstration
+  return distanceCm; // Return the distance read from the sensor
 }
 
 void setup() {
   Serial.begin(115200);
   Serial.println("Begining to connect to WiFi..");
-
-  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
-  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
   
   // Connect to Wi-Fi with static IP configuration
   WiFi.config(static_ip, gateway, subnet);
@@ -54,7 +47,7 @@ void setup() {
   });
 
   server.on("/water_level", HTTP_GET, [](AsyncWebServerRequest *request) {
-    int waterLevel = readWaterLevel(); // Read the water level
+    float waterLevel = readWaterLevel(); // Read the water level
     StaticJsonDocument<200> doc;
     doc["water_level"] = waterLevel;
     String jsonStr;
@@ -70,29 +63,30 @@ void setup() {
 }
 
 void loop() {
-  // Nothing to do here as all the functionality is in setup()
-  // Clears the trigPin
+  // Establish variables for duration of the ping, and the distance result
+  // in inches and centimeters:
+  long duration;
+
+  // The HC-SR04 sensor is triggered by a HIGH pulse of 10 or more microseconds.
+  // Give a short LOW pulse beforehand to ensure a clean HIGH pulse:
+  pinMode(trigPin, OUTPUT);
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
-  // Sets the trigPin on HIGH state for 10 micro seconds
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
-  
-  // Reads the echoPin, returns the sound wave travel time in microseconds
+
+  // The same pin is used to read the signal from the HC-SR04 sensor: a HIGH pulse
+  // whose duration is the time (in microseconds) from the sending of the ping
+  // to the reception of its echo off of an object.
+  pinMode(echoPin, INPUT);
   duration = pulseIn(echoPin, HIGH);
+
+  // Convert the time into distance (cm)
+  distanceCm = duration * 0.034 / 2; // Speed of sound is 34 cm/microsecond
   
-  // Calculate the distance
-  distanceCm = duration * SOUND_SPEED/2;
-  
-  // Convert to inches
-  distanceInch = distanceCm * CM_TO_INCH;
-  
-  // Prints the distance in the Serial Monitor
   Serial.print("Distance (cm): ");
   Serial.println(distanceCm);
-  Serial.print("Distance (inch): ");
-  Serial.println(distanceInch);
   
-  delay(1000);
+  delay(100);
 }
