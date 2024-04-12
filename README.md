@@ -3,9 +3,9 @@ This is just a side project. WHich can measure the water level and share the dat
 
 ### Plan
 - Create a server, which has host REST API. -- Done
-- Connect the ESP32 with the ultrasonic sensor -- Inprogress
+- Connect the ESP32 with the ultrasonic sensor -- Done
 - Connect the ESP32 with the floating sensore -- TODO
-- Create a APK to call this API and show the data -- TODO
+- Create a APK to call this API and show the data -- Inprogress
 
 ### Explaination
 - Ultrasonic sensor
