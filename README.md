@@ -14,13 +14,15 @@ This is just a side project. WHich can measure the water level and share the dat
     - GND: Connect to the ground
     - Trig: Trigger as an input Pin
     - Echo: Echo Pin as an output pin
+      
 ![image](https://github.com/arun-singh-masillamony/esp32_api_server/assets/53141964/1a3ec572-3dce-4983-88f4-1c05ce2655fb)
 
 - ESP 32
   - As per current code, I have conncted the "Trig" and "Echo" with pin "14" & "27"  (P14 & P27).
   - Connect the sensor's GND with the ESP32's GND.
   - Get the power from ESP32's "5v" pin.
- ![image](https://github.com/arun-singh-masillamony/esp32_api_server/assets/53141964/41f8ecbb-f8c5-4d5c-a653-6225a2c54830)
+    
+![image](https://github.com/arun-singh-masillamony/esp32_api_server/assets/53141964/41f8ecbb-f8c5-4d5c-a653-6225a2c54830)
 
   - As per esp32_pin_image.png, we can see what are the pins we can use as a input or output or both.
   - As per that image, I came to the conclusion that we can use pin 14 & 27 for both input and output.
