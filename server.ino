@@ -9,6 +9,17 @@ IPAddress static_ip(192, 168, 0, 140); // Static IP address
 IPAddress gateway(192, 168, 0, 1);      // Gateway IP address
 IPAddress subnet(255, 255, 255, 0);     // Subnet mask
 
+const int trigPin = 5;
+const int echoPin = 18;
+
+//define sound speed in cm/uS
+#define SOUND_SPEED 0.034
+#define CM_TO_INCH 0.393701
+
+long duration;
+float distanceCm;
+float distanceInch;
+
 AsyncWebServer server(80);
 
 int readWaterLevel() {
@@ -20,6 +31,9 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Begining to connect to WiFi..");
 
+  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
+  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+  
   // Connect to Wi-Fi with static IP configuration
   WiFi.config(static_ip, gateway, subnet);
   WiFi.begin(ssid, password);
@@ -57,4 +71,28 @@ void setup() {
 
 void loop() {
   // Nothing to do here as all the functionality is in setup()
+  // Clears the trigPin
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH);
+  
+  // Calculate the distance
+  distanceCm = duration * SOUND_SPEED/2;
+  
+  // Convert to inches
+  distanceInch = distanceCm * CM_TO_INCH;
+  
+  // Prints the distance in the Serial Monitor
+  Serial.print("Distance (cm): ");
+  Serial.println(distanceCm);
+  Serial.print("Distance (inch): ");
+  Serial.println(distanceInch);
+  
+  delay(1000);
 }
